@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "719324778145",
+    "project_id": "nft-app-59bbc",
+    "storage_bucket": "nft-app-59bbc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719324778145:android:747bb6d17a1dd756aeeae0",
+        "android_client_info": {
+          "package_name": "com.example.nft_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5gkp-vE1qgcVEA_MxAUumFg7wwuhSs-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

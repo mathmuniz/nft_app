@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nft_app/components/my_appbar.dart';
-import 'package:nft_app/components/my_bottombar.dart';
-import 'package:nft_app/components/my_tabbar.dart';
-import 'package:nft_app/tabs/recent_tab.dart';
-import 'package:nft_app/tabs/top_tab.dart';
-import 'package:nft_app/tabs/trending_tab.dart';
-import 'package:nft_app/theme/glass_box.dart';
-
+import 'package:nft_app/components/my_drawer.dart';
+import 'package:nft_app/pages/collection_page.dart';
+import '../models/collection.dart';
+import '../services/firebase_service.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -15,52 +11,66 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // search button tapped
-  void _searchButtonTapped() {}
+  List<Collection> _collections = [];
+    @override
+  void initState() {
+    super.initState();
+    _getCollections();
 
-  // our 3 tab options
-  List tabOptions = const [
-    ['Recent', RecentTab()],
-    ['Trending', TrendingTab()],
-    ['Top', TopTab()],
-  ];
+  }
 
-  //bottom bar navigation
-  int _currentBottomIndex = 0;
-  void _handleBottomIndexChange(int? index) {
+  void _getCollections() async {
+    final List<Collection> collections = await FirebaseService.getCollections();
     setState(() {
-      _currentBottomIndex = index!;
+      _collections = collections;
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: tabOptions.length,
-      child: Scaffold(
-        backgroundColor: Colors.grey[300],
-        extendBody: true,
-        bottomNavigationBar: GlassBox(
-          child: MyBottomBar(
-            index: _currentBottomIndex,
-            onTap: _handleBottomIndexChange,
-          ),
-        ),
-        body: ListView(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      drawer: MyDrawer(),
+      appBar: AppBar(
+        title: const Text("H O M E"),
+        centerTitle: true,
+        foregroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      
+      body: Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: ListView(
           children: [
-            // app bar + search button
-            MyAppBar(
-              title: 'Explore Collections',
-              onTap: _searchButtonTapped,
-            ),
-
-            // tab bar
-            SizedBox(
-              height: 600,
-              child: MyTabBar(
-                tabOptions: tabOptions,
-              ),
-            )
+            ..._collections
+                .map((collection) => Column(
+                  children: [
+                    ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(collection.nome),
+                          SizedBox(width: 8,),
+                          Icon(Icons.verified, color: Colors.blue, size: 20),
+                        ],
+                      ),
+                      leading: Image.network(collection.icone),
+                      onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CollectionPage(
+                                  collection: collection,
+                                ),
+                              ),
+                            );
+                          },
+        
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ))
+                .toList(),
           ],
         ),
       ),
